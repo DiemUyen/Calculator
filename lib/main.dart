@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'models/expression.dart';
+import 'models/history.dart';
 import 'views/calculator_view.dart';
 
 void main() {
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
         providers: [
           Provider<Expression>(create: (_) => Expression()),
+          Provider<History>(create: (_) => History()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

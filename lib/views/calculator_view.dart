@@ -15,6 +15,7 @@ class CalculatorView extends StatefulWidget {
 }
 
 class _CalculatorViewState extends State<CalculatorView> {
+
   @override
   Widget build(BuildContext context) {
     final expression = Provider.of<Expression>(context);

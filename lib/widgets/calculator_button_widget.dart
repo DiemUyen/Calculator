@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/expression.dart';
+import '../models/history.dart';
 import '../utils/buttons.dart';
 
 class CalculatorButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class CalculatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final expression = Provider.of<Expression>(context);
+    final history = Provider.of<History>(context, listen: false);
 
     return Container(
       margin: EdgeInsets.all(2),
@@ -36,6 +38,12 @@ class CalculatorButton extends StatelessWidget {
         ),
         onTap: () {
           expression.addExpression(button.symbol);
+          if (button.symbol == '=') {
+            final expr = Expression();
+            expr.expression = expression.expression;
+            expr.result = expression.result;
+            history.addExpression(expr);
+          }
         },
       ),
     );
