@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/expression.dart';
 import '../models/history.dart';
+import '../utils/local_storage.dart';
 
 class HistoryItem extends StatelessWidget {
   const HistoryItem({super.key, required this.expression});
@@ -12,6 +15,7 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final history = Provider.of<History>(context);
+    final localStorage = Provider.of<LocalStorage>(context, listen: false);
 
     return Container(
       decoration: BoxDecoration(
@@ -57,6 +61,7 @@ class HistoryItem extends StatelessWidget {
             ),
             onPressed: () {
               history.removeExpression(expression);
+              localStorage.putString('history', jsonEncode(history.toJson()));
             },
           )
         ],

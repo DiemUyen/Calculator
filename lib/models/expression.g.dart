@@ -3,6 +3,20 @@
 part of 'expression.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Expression _$ExpressionFromJson(Map<String, dynamic> json) => Expression()
+  ..expression = json['expression'] as String
+  ..result = json['result'] as String;
+
+Map<String, dynamic> _$ExpressionToJson(Expression instance) =>
+    <String, dynamic>{
+      'expression': instance.expression,
+      'result': instance.result,
+    };
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 

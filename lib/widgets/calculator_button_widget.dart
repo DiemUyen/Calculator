@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/expression.dart';
 import '../models/history.dart';
 import '../utils/buttons.dart';
+import '../utils/local_storage.dart';
 
 class CalculatorButton extends StatelessWidget {
   const CalculatorButton({super.key, required this.button});
@@ -14,6 +17,7 @@ class CalculatorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final expression = Provider.of<Expression>(context);
     final history = Provider.of<History>(context, listen: false);
+    final localStorage = Provider.of<LocalStorage>(context, listen: false);
 
     return Container(
       margin: EdgeInsets.all(2),
@@ -43,6 +47,7 @@ class CalculatorButton extends StatelessWidget {
             expr.expression = expression.expression;
             expr.result = expression.result;
             history.addExpression(expr);
+            localStorage.putString('history', jsonEncode(history.toJson()));
           }
         },
       ),

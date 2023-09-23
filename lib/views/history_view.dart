@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../models/history.dart';
+import '../utils/local_storage.dart';
 import '../widgets/history_item.dart';
 
 class HistoryView extends StatefulWidget {
@@ -16,6 +17,8 @@ class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     final history = Provider.of<History>(context);
+    final localStorage = Provider.of<LocalStorage>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("History"),
@@ -30,7 +33,10 @@ class _HistoryViewState extends State<HistoryView> {
                   Icons.delete_outline_rounded,
                   color: Colors.grey,
                 ),
-                onPressed: history.clearExpressions,
+                onPressed: () {
+                  history.clearExpressions();
+                  localStorage.putString('history', '');
+                },
               );
             }
           )

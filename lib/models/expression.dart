@@ -1,8 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mobx/mobx.dart';
 
 part 'expression.g.dart';
 
-class Expression = _ExpressionBase with _$Expression;
+@JsonSerializable()
+class Expression extends _ExpressionBase with _$Expression {
+  Expression();
+
+  factory Expression.fromJson(Map<String, dynamic> json) => _$ExpressionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpressionToJson(this);
+}
 
 abstract class _ExpressionBase with Store {
   @observable
