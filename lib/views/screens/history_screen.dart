@@ -52,7 +52,7 @@ class HistoryScreen extends StatelessWidget {
                 ),
                 actions: [
                   Observer(
-                    builder: (_) => history.length != 0
+                    builder: (_) => history.isNotEmpty
                         ? IconButton(
                             icon: Icon(
                               Icons.delete,
@@ -72,7 +72,7 @@ class HistoryScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Observer(
-                          builder: (_) => history.length == 0
+                          builder: (_) => history.isEmpty
                               ? Center(
                                   child: Text(
                                     'No calculated history found.',

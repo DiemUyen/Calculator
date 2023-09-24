@@ -11,6 +11,12 @@ abstract class _HistoryStore with Store {
   @observable
   ObservableList<Expression> expressions = ObservableList();
 
+  @computed
+  bool get isEmpty => expressions.isEmpty;
+
+  @computed
+  bool get isNotEmpty => expressions.isNotEmpty;
+
   int get length => expressions.length;
 
   @action
