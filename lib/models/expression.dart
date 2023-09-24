@@ -1,159 +1,258 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:mobx/mobx.dart';
+
+import '../utils/enums.dart';
 
 part 'expression.g.dart';
 
-@JsonSerializable()
-class Expression extends _ExpressionBase with _$Expression {
-  Expression();
+class Expression = _ExpressionStore with _$Expression;
 
-  factory Expression.fromJson(Map<String, dynamic> json) => _$ExpressionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ExpressionToJson(this);
-}
-
-abstract class _ExpressionBase with Store {
+abstract class _ExpressionStore with Store {
+  // Expression is shown on the screen to help people know what they typed
   @observable
-  String expression = '';
+  var expression = '';
 
+  // Result is shown on the screen to help people know the result of the expression or the result of the current input
   @observable
-  String result = '';
+  var result = '0';
 
-  final operationRegex = RegExp(r'[+\-x/]');
+  // The current input type is the type of the current input
+  var currentInputType = InputType.number;
+
+  // The stack expression is the list of number that is being typed
+  // For example, if the user types 1 + 2, the stack expression will be [1, 2]
+  List<String> stackVariables = [];
+
+  // The stack operations is the list of operations that is being typed
+  // For example, if the user types 1 + 2, the stack operations will be [+]
+  List<String> stackOperations = [];
 
   @action
-  void addExpression(String value) {
-    if (result.isNotEmpty) {
-      expression = result;
-      result = '';
-    }
-
-    if (value == '=') {
-      calculate();
-    } else if (value == 'C') {
-      clearExpression();
-    } else if (value == 'DEL') {
-      if (expression.isNotEmpty) {
-        expression = expression.substring(0, expression.length - 1);
-      }
-    } else if (value == 'CE') {
-      var indexLastOperation =
-          findIndexOfLastOperation(expression, operationRegex);
-      if (indexLastOperation != -1) {
-        expression = expression.substring(0, indexLastOperation + 1);
-      } else {
-        expression = '';
-      }
-    } else {
-      expression += value;
+  void buttonPressed(InputType type, {String symbol = ''}) {
+    switch (type) {
+      case InputType.clear:
+        if (currentInputType == InputType.clear ||
+            currentInputType == InputType.equal) {
+          clearAll();
+        } else {
+          clearCurrentInput();
+        }
+        break;
+      case InputType.sign:
+        signPressed();
+        break;
+      case InputType.percent:
+        percentPressed();
+        break;
+      case InputType.delete:
+        deleteOneNumberInput();
+        break;
+      case InputType.number:
+        numberPressed(symbol);
+        break;
+      case InputType.dot:
+        dotPressed();
+        break;
+      case InputType.operation:
+        operationPressed(symbol);
+        break;
+      case InputType.equal:
+        equalPressed();
+        break;
     }
   }
 
   @action
-  void clearExpression() {
+  void clearCurrentInput() {
+    result = '0';
+    currentInputType = InputType.clear;
+  }
+
+  @action
+  void clearAll() {
     expression = '';
-    result = '';
+    result = '0';
+    currentInputType = InputType.clear;
+    stackVariables.clear();
+    stackOperations.clear();
   }
-
-  String findNextVariable(String expression, Pattern pattern) {
-    var operationIndex = expression.indexOf(pattern);
-    // Just have variable in expression
-    if (operationIndex == -1) {
-      return expression;
-    }
-    // Have operation in expression
-    if (operationIndex != 0) {
-      var variable = expression.substring(0, operationIndex);
-      return variable;
-    }
-
-    return '';
-  }
-
-  String findNextOperation(String expression, Pattern pattern) {
-    if (hasNextOperation(expression, pattern)) {
-      return expression.substring(0, 1);
-    } else {
-      return '';
-    }
-  }
-
-  int findIndexOfLastOperation(String expression, Pattern pattern) =>
-      expression.lastIndexOf(pattern);
-
-  bool hasNextOperation(String expression, Pattern pattern) =>
-      expression.indexOf(pattern) == 0;
-
-  bool checkNumberHasPercent(String number) =>
-      number.indexOf(RegExp(r'%')) != -1;
 
   @action
-  void calculate() {
-    var expr = expression;
-    var stackExpr = <String>[];
-
-    while (expr.isNotEmpty) {
-      var firstVariable = findNextVariable(expr, operationRegex);
-      expr = expr.substring(firstVariable.length);
-      var operation = findNextOperation(expr, operationRegex);
-      expr = expr.substring(operation.length);
-      var secondVariable = findNextVariable(expr, operationRegex);
-      expr = expr.substring(secondVariable.length);
-
-      if (checkNumberHasPercent(firstVariable)) {
-        var number =
-            double.parse(firstVariable.substring(0, firstVariable.length - 1));
-        firstVariable = (number / 100).toString();
+  void signPressed() {
+    if (currentInputType == InputType.equal) {
+      expression = '';
+      if (result.startsWith('-')) {
+        result = result.substring(1);
+      } else {
+        result = '-$result';
       }
-      if (checkNumberHasPercent(secondVariable)) {
-        var number = double.parse(
-            secondVariable.substring(0, secondVariable.length - 1));
-        secondVariable = (number / 100).toString();
+      stackVariables.clear();
+      stackOperations.clear();
+    } else {
+      if (result.startsWith('-')) {
+        result = result.substring(1);
+      } else {
+        result = '-$result';
       }
+    }
+    currentInputType = InputType.sign;
+  }
 
-      if (firstVariable.isNotEmpty) {
-        stackExpr.add(firstVariable);
-      }
-      if (operation.isNotEmpty) {
-        switch (operation) {
-          case '+':
-          case '-':
-            stackExpr.add(operation);
-            stackExpr.add(secondVariable);
-            break;
-          case 'x':
-            var result = double.parse(stackExpr.removeLast()) *
-                double.parse(secondVariable);
-            stackExpr.add(result.toString());
-            break;
-          case '/':
-            var result = double.parse(stackExpr.removeLast()) /
-                double.parse(secondVariable);
-            stackExpr.add(result.toString());
-            break;
+  @action
+  void percentPressed() {
+    if (currentInputType == InputType.equal) {
+      expression = '';
+      result = (double.parse(result) / 100).toString();
+      stackVariables.clear();
+      stackOperations.clear();
+    } else {
+      result = (double.parse(result) / 100).toString();
+    }
+    currentInputType = InputType.percent;
+  }
+
+  @action
+  void deleteOneNumberInput() {
+    if (result.length == 1) {
+      result = '0';
+    } else {
+      result = result.substring(0, result.length - 1);
+    }
+    currentInputType = InputType.delete;
+  }
+
+  @action
+  void numberPressed(String number) {
+    if (currentInputType == InputType.equal) {
+      expression = '';
+      result = number;
+      stackVariables.clear();
+      stackOperations.clear();
+    } else {
+      if (number == '0') {
+        if (result != '0') {
+          result += number;
+        }
+      } else {
+        if (result == '0') {
+          result = number;
+        } else {
+          result += number;
         }
       }
     }
+    currentInputType = InputType.number;
+  }
 
-    while (stackExpr.length != 1) {
-      var operation = stackExpr[1];
-      var temp = 0.0;
-      switch (operation) {
-        case '+':
-          temp = double.parse(stackExpr[0]) + double.parse(stackExpr[2]);
-          break;
-        case '-':
-          temp = double.parse(stackExpr[0]) - double.parse(stackExpr[2]);
-          break;
-      }
-      stackExpr.first = temp.toString();
-      stackExpr.removeRange(1, 3);
-    }
-
-    if (double.parse(stackExpr.last) == double.parse(stackExpr.last).ceil()) {
-      result = double.parse(stackExpr.last).ceil().toString();
+  @action
+  void dotPressed() {
+    if (currentInputType == InputType.equal) {
+      expression = '';
+      result = '$result.';
+      stackVariables.clear();
+      stackOperations.clear();
     } else {
-      result = stackExpr.last;
+      if (!result.contains('.')) {
+        result += '.';
+      }
+    }
+    currentInputType = InputType.dot;
+  }
+
+  @action
+  void operationPressed(String operation) {
+    if (currentInputType == InputType.equal) {
+      expression = result;
+      stackOperations.clear();
+    } else if (currentInputType == InputType.operation) {
+      stackOperations.removeLast();
+      expression = expression.substring(0, expression.length - 3);
+    } else {
+      stackVariables.add(result);
+      expression += '$result';
+    }
+    stackOperations.add(operation);
+    expression += ' $operation ';
+    result = '0';
+    currentInputType = InputType.operation;
+  }
+
+  @action
+  void equalPressed() {
+    if (currentInputType != InputType.equal) {
+      stackVariables.add(result);
+      expression += '$result = ';
+
+      var indexOperation = 0;
+      var hasDivideOrMultiply = true;
+
+      while (stackOperations.isNotEmpty) {
+        if (hasDivideOrMultiply) {
+          if (stackOperations[indexOperation] == 'x') {
+            stackVariables[indexOperation] = multiply(
+                    stackVariables[indexOperation],
+                    stackVariables[indexOperation + 1])
+                .toString();
+            stackVariables.removeAt(indexOperation + 1);
+            stackOperations.removeAt(indexOperation);
+          } else if (stackOperations[indexOperation] == '÷') {
+            stackVariables[indexOperation] = divide(
+                    stackVariables[indexOperation],
+                    stackVariables[indexOperation + 1])
+                .toString();
+            stackVariables.removeAt(indexOperation + 1);
+            stackOperations.removeAt(indexOperation);
+          } else {
+            indexOperation++;
+          }
+
+          // If the index operation is the last index of the stack operations, then we need to reset the index operation to 0
+          // and set the hasDivideOrMultiply to false
+          // and calculate the remaining operations
+          if (indexOperation >= stackOperations.length) {
+            indexOperation = 0;
+            hasDivideOrMultiply = false;
+          }
+        } else {
+          if (stackOperations[indexOperation] == '+') {
+            stackVariables[indexOperation] = add(stackVariables[indexOperation],
+                    stackVariables[indexOperation + 1])
+                .toString();
+            stackVariables.removeAt(indexOperation + 1);
+            stackOperations.removeAt(indexOperation);
+          } else if (stackOperations[indexOperation] == '-') {
+            stackVariables[indexOperation] = subtract(
+                    stackVariables[indexOperation],
+                    stackVariables[indexOperation + 1])
+                .toString();
+            stackVariables.removeAt(indexOperation + 1);
+            stackOperations.removeAt(indexOperation);
+          }
+        }
+      }
+    }
+    simplifyResult(stackVariables[0]);
+    stackVariables[0] = result;
+    currentInputType = InputType.equal;
+  }
+
+  double add(String numberOne, String numberTwo) =>
+      double.parse(numberOne) + double.parse(numberTwo);
+
+  double subtract(String numberOne, String numberTwo) =>
+      double.parse(numberOne) - double.parse(numberTwo);
+
+  double multiply(String numberOne, String numberTwo) =>
+      double.parse(numberOne) * double.parse(numberTwo);
+
+  double divide(String numberOne, String numberTwo) =>
+      double.parse(numberOne) / double.parse(numberTwo);
+
+  void simplifyResult(String number) {
+    var resultSplit = number.split('.');
+    if (resultSplit[1] == '0') {
+      result = resultSplit[0];
+    } else {
+      result = number;
     }
   }
 }

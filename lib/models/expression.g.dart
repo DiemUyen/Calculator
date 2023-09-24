@@ -3,28 +3,14 @@
 part of 'expression.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-Expression _$ExpressionFromJson(Map<String, dynamic> json) => Expression()
-  ..expression = json['expression'] as String
-  ..result = json['result'] as String;
-
-Map<String, dynamic> _$ExpressionToJson(Expression instance) =>
-    <String, dynamic>{
-      'expression': instance.expression,
-      'result': instance.result,
-    };
-
-// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$Expression on _ExpressionBase, Store {
+mixin _$Expression on _ExpressionStore, Store {
   late final _$expressionAtom =
-      Atom(name: '_ExpressionBase.expression', context: context);
+      Atom(name: '_ExpressionStore.expression', context: context);
 
   @override
   String get expression {
@@ -40,7 +26,7 @@ mixin _$Expression on _ExpressionBase, Store {
   }
 
   late final _$resultAtom =
-      Atom(name: '_ExpressionBase.result', context: context);
+      Atom(name: '_ExpressionStore.result', context: context);
 
   @override
   String get result {
@@ -55,39 +41,116 @@ mixin _$Expression on _ExpressionBase, Store {
     });
   }
 
-  late final _$_ExpressionBaseActionController =
-      ActionController(name: '_ExpressionBase', context: context);
+  late final _$_ExpressionStoreActionController =
+      ActionController(name: '_ExpressionStore', context: context);
 
   @override
-  void addExpression(String value) {
-    final _$actionInfo = _$_ExpressionBaseActionController.startAction(
-        name: '_ExpressionBase.addExpression');
+  void buttonPressed(InputType type, {String symbol = ''}) {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.buttonPressed');
     try {
-      return super.addExpression(value);
+      return super.buttonPressed(type, symbol: symbol);
     } finally {
-      _$_ExpressionBaseActionController.endAction(_$actionInfo);
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void clearExpression() {
-    final _$actionInfo = _$_ExpressionBaseActionController.startAction(
-        name: '_ExpressionBase.clearExpression');
+  void clearCurrentInput() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.clearCurrentInput');
     try {
-      return super.clearExpression();
+      return super.clearCurrentInput();
     } finally {
-      _$_ExpressionBaseActionController.endAction(_$actionInfo);
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void calculate() {
-    final _$actionInfo = _$_ExpressionBaseActionController.startAction(
-        name: '_ExpressionBase.calculate');
+  void clearAll() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.clearAll');
     try {
-      return super.calculate();
+      return super.clearAll();
     } finally {
-      _$_ExpressionBaseActionController.endAction(_$actionInfo);
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void signPressed() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.signPressed');
+    try {
+      return super.signPressed();
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void percentPressed() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.percentPressed');
+    try {
+      return super.percentPressed();
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void deleteOneNumberInput() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.deleteOneNumberInput');
+    try {
+      return super.deleteOneNumberInput();
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void numberPressed(String number) {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.numberPressed');
+    try {
+      return super.numberPressed(number);
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void dotPressed() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.dotPressed');
+    try {
+      return super.dotPressed();
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void operationPressed(String operation) {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.operationPressed');
+    try {
+      return super.operationPressed(operation);
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void equalPressed() {
+    final _$actionInfo = _$_ExpressionStoreActionController.startAction(
+        name: '_ExpressionStore.equalPressed');
+    try {
+      return super.equalPressed();
+    } finally {
+      _$_ExpressionStoreActionController.endAction(_$actionInfo);
     }
   }
 
