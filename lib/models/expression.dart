@@ -87,6 +87,9 @@ abstract class _ExpressionStore with Store {
 
   @action
   void signPressed() {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (currentInputType == InputType.equal) {
       expression = '';
       if (result.startsWith('-')) {
@@ -108,9 +111,16 @@ abstract class _ExpressionStore with Store {
 
   @action
   void percentPressed() {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (currentInputType == InputType.equal) {
       expression = '';
-      result = (double.parse(result) / 100).toString();
+      if (result == '0') {
+        result = '0';
+      } else {
+        result = (double.parse(result) / 100).toString();
+      }
       stackVariables.clear();
       stackOperations.clear();
     } else {
@@ -125,6 +135,9 @@ abstract class _ExpressionStore with Store {
 
   @action
   void deleteOneNumberInput() {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (result.length == 1) {
       result = '0';
     } else {
@@ -135,6 +148,9 @@ abstract class _ExpressionStore with Store {
 
   @action
   void numberPressed(String number) {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (currentInputType == InputType.equal) {
       expression = '';
       result = number;
@@ -160,9 +176,14 @@ abstract class _ExpressionStore with Store {
 
   @action
   void dotPressed() {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (currentInputType == InputType.equal) {
       expression = '';
-      result = '$result.';
+      if (!result.contains('.')) {
+        result += '.';
+      }
       stackVariables.clear();
       stackOperations.clear();
     } else {
@@ -175,6 +196,9 @@ abstract class _ExpressionStore with Store {
 
   @action
   void operationPressed(String operation) {
+    if (result == 'N/A') {
+      result = '0';
+    }
     if (currentInputType == InputType.equal) {
       expression = result;
       stackOperations.clear();
@@ -264,10 +288,18 @@ abstract class _ExpressionStore with Store {
 
   void simplifyResult(String number) {
     var resultSplit = number.split('.');
-    if (resultSplit[1] == '0') {
-      result = resultSplit[0];
+    if (resultSplit.length == 1) {
+      if (resultSplit[0] == 'Infinity') {
+        result = 'N/A';
+      } else {
+        result = resultSplit[0];
+      }
     } else {
-      result = number;
+      if (resultSplit[1] == '0') {
+        result = resultSplit[0];
+      } else {
+        result = number;
+      }
     }
   }
 }
