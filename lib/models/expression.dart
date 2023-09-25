@@ -114,7 +114,11 @@ abstract class _ExpressionStore with Store {
       stackVariables.clear();
       stackOperations.clear();
     } else {
-      result = (double.parse(result) / 100).toString();
+      if (result == '0') {
+        result = '0';
+      } else {
+        result = (double.parse(result) / 100).toString();
+      }
     }
     currentInputType = InputType.percent;
   }
@@ -138,12 +142,14 @@ abstract class _ExpressionStore with Store {
       stackOperations.clear();
     } else {
       if (number == '0') {
-        if (result != '0') {
+        if (result != '0' && result != '-0') {
           result += number;
         }
       } else {
         if (result == '0') {
           result = number;
+        } else if (result == '-0') {
+          result = '-$number';
         } else {
           result += number;
         }
