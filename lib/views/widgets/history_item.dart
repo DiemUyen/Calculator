@@ -22,25 +22,29 @@ class HistoryItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${expression.expression}',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white60,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${expression.expression}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white60,
+                    ),
+                    textAlign: TextAlign.right,
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${expression.result}',
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.white,
+                  const SizedBox(height: 8),
+                  Text(
+                    '${expression.result}',
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.right,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

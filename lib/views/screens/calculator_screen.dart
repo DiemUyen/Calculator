@@ -69,25 +69,29 @@ class CalculatorScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Observer(
-                    builder: (_) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${expression.expression}',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white60,
+                    builder: (_) => SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${expression.expression}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white60,
+                            ),
+                            textAlign: TextAlign.right,
                           ),
-                        ),
-                        Text(
-                          '${expression.result}',
-                          style: TextStyle(
-                            fontSize: 40,
-                            color: Colors.white,
+                          Text(
+                            '${expression.result}',
+                            style: TextStyle(
+                              fontSize: 40,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.right,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
