@@ -3,6 +3,40 @@
 part of 'expression.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Expression _$ExpressionFromJson(Map<String, dynamic> json) => Expression()
+  ..expression = json['expression'] as String
+  ..result = json['result'] as String
+  ..currentInputType = $enumDecode(_$InputTypeEnumMap, json['currentInputType'])
+  ..stackVariables =
+      (json['stackVariables'] as List<dynamic>).map((e) => e as String).toList()
+  ..stackOperations = (json['stackOperations'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList();
+
+Map<String, dynamic> _$ExpressionToJson(Expression instance) =>
+    <String, dynamic>{
+      'expression': instance.expression,
+      'result': instance.result,
+      'currentInputType': _$InputTypeEnumMap[instance.currentInputType]!,
+      'stackVariables': instance.stackVariables,
+      'stackOperations': instance.stackOperations,
+    };
+
+const _$InputTypeEnumMap = {
+  InputType.number: 'number',
+  InputType.operation: 'operation',
+  InputType.equal: 'equal',
+  InputType.delete: 'delete',
+  InputType.clear: 'clear',
+  InputType.percent: 'percent',
+  InputType.dot: 'dot',
+  InputType.sign: 'sign',
+};
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 

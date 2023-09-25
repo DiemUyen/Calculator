@@ -1,14 +1,24 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mobx/mobx.dart';
 
 import 'expression.dart';
 
 part 'history.g.dart';
 
-class History = _HistoryStore with _$History;
+@JsonSerializable()
+class History extends _HistoryStore with _$History {
+  History();
+
+  factory History.fromJson(Map<String, dynamic> json) =>
+      _$HistoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HistoryToJson(this);
+}
 
 abstract class _HistoryStore with Store {
   // History is a list of expressions that have been calculated
   @observable
+  @ObservableExpressionListConverter()
   ObservableList<Expression> expressions = ObservableList();
 
   @computed
@@ -21,7 +31,10 @@ abstract class _HistoryStore with Store {
 
   @action
   void addExpressionHistory(Expression expression) {
-    expressions.insert(0, expression);
+    var temp = Expression();
+    temp.expression = expression.expression;
+    temp.result = expression.result;
+    expressions.insert(0, temp);
   }
 
   @action
@@ -33,4 +46,17 @@ abstract class _HistoryStore with Store {
   void clearAllExpressionsHistory() {
     expressions.clear();
   }
+}
+
+class ObservableExpressionListConverter extends JsonConverter<
+    ObservableList<Expression>, List<dynamic>> {
+  const ObservableExpressionListConverter();
+
+  @override
+  ObservableList<Expression> fromJson(List<dynamic> json) =>
+      ObservableList.of(json.map((e) => Expression.fromJson(e as Map<String, dynamic>)));
+
+  @override
+  List<dynamic> toJson(ObservableList<Expression> object) =>
+      object.map((e) => e.toJson()).toList();
 }

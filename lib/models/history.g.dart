@@ -3,6 +3,19 @@
 part of 'history.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+History _$HistoryFromJson(Map<String, dynamic> json) => History()
+  ..expressions = const ObservableExpressionListConverter()
+      .fromJson(json['expressions'] as List);
+
+Map<String, dynamic> _$HistoryToJson(History instance) => <String, dynamic>{
+      'expressions': const ObservableExpressionListConverter()
+          .toJson(instance.expressions),
+    };
+
+// **************************************************************************
 // StoreGenerator
 // **************************************************************************
 

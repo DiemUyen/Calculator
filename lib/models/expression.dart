@@ -1,10 +1,19 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mobx/mobx.dart';
 
 import '../utils/enums.dart';
 
 part 'expression.g.dart';
 
-class Expression = _ExpressionStore with _$Expression;
+@JsonSerializable()
+class Expression extends _ExpressionStore with _$Expression {
+  Expression();
+
+  factory Expression.fromJson(Map<String, dynamic> json) =>
+      _$ExpressionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpressionToJson(this);
+}
 
 abstract class _ExpressionStore with Store {
   // Expression is shown on the screen to help people know what they typed

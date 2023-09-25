@@ -30,10 +30,7 @@ class CalculatorButton extends StatelessWidget {
         onTap: () {
           expression.buttonPressed(button.type, symbol: button.symbol);
           if (button.type == InputType.equal) {
-            var temp = Expression();
-            temp.expression = expression.expression;
-            temp.result = expression.result;
-            history.addExpressionHistory(temp);
+            history.addExpressionHistory(expression);
           }
         },
         child: Center(
