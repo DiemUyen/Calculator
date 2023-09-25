@@ -38,6 +38,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final savedHistory = localStorage.getString('history');
     if (savedHistory != null) {
       var savedHistoryList = History.fromJson(jsonDecode(savedHistory));
+      history.clearAllExpressionsHistory();
       for (var expr in savedHistoryList.expressions) {
         history.addExpressionHistory(expr);
       }
